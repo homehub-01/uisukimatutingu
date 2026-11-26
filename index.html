@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>ウイスキーマッチング</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#17100a;--bg2:#21170f;--card:#2a1e13;--card2:#332619;--line:#4a3520;--amber:#e8a93d;--amber2:#f5c86a;--copper:#c47a2b;--cream:#f7ead1;--muted:#c9b294;--muted2:#9d866b;--green:#8fb573;--radius:18px}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(900px 500px at 50% -80px,#3d2812 0%,var(--bg) 55%);color:var(--cream);font-family:"Zen Kaku Gothic New",system-ui,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+button{font:inherit;min-height:44px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px 56px}
+a{color:var(--amber2)}
+/* HERO */
+.hero{padding:38px 0 8px;text-align:left}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#ffffff10;padding:6px 12px;border-radius:999px;font-size:12px;letter-spacing:.08em;font-weight:700;color:var(--amber2)}
+.hero h1{font-family:"Shippori Mincho",serif;font-size:42px;line-height:1.15;margin:18px 0 12px;font-weight:800}
+.hero h1 span{color:var(--amber)}
+.hero p{color:var(--muted);font-size:15.5px;margin:0;max-width:580px}
+.hero-visual{margin:22px 0 18px;background:linear-gradient(135deg,#2e1f0f,#1d130a);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;gap:16px;align-items:center}
+.bottle-ill{flex:0 0 92px;height:150px;position:relative}
+.bottle-ill:before{content:"";position:absolute;left:32px;top:0;width:28px;height:38px;background:#6b4420;border-radius:6px 6px 0 0}
+.bottle-ill:after{content:"";position:absolute;left:14px;top:34px;width:64px;height:110px;background:linear-gradient(180deg,#f0b84a,#b96f16);border-radius:12px 12px 16px 16px;box-shadow:inset 0 0 0 1px #ffffff33}
+.bottle-label{position:absolute;z-index:2;left:22px;top:78px;width:48px;background:#fff8e7;color:#3a2410;text-align:center;font-size:10px;font-weight:900;line-height:1.3;padding:7px 2px;border-radius:4px}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:20px;color:#fff}.stat span{font-size:12px;color:var(--muted)}
+.start-btn{width:100%;margin-top:18px;background:var(--amber);color:#1d1206;border:none;border-radius:999px;padding:16px 20px;font-weight:900;font-size:17px;box-shadow:0 10px 28px #e8a93d33}
+.start-btn:active{transform:scale(.99)}
+.note{font-size:12.5px;color:var(--muted2);text-align:center;margin-top:10px}
+.how{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px}
+.how div{border-top:2px solid var(--copper);padding-top:10px}
+.how b{font-size:13px}.how p{font-size:12.5px;color:var(--muted);margin:4px 0 0;line-height:1.6}
+@media(max-width:560px){.hero h1{font-size:34px}.how{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr 1fr 1fr}.hero-visual{padding:14px}}
+/* QUIZ */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0 8px;gap:12px}
+.logo{font-family:"Shippori Mincho",serif;font-weight:800;letter-spacing:.04em}
+.logo span{color:var(--amber)}
+.textbtn{background:none;border:none;color:var(--muted);text-decoration:underline;padding:10px;min-height:44px}
+.progress{height:8px;background:#ffffff14;border-radius:999px;overflow:hidden;margin:6px 0 6px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--copper),var(--amber));border-radius:999px;transition:width .35s}
+.qmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.06em;font-weight:700}
+.qcard{margin-top:14px}
+.qcard h2{font-family:"Shippori Mincho",serif;font-size:26px;line-height:1.35;margin:8px 0 6px}
+.qsub{color:var(--muted);font-size:14px;margin:0 0 18px}
+.opts{display:flex;flex-direction:column;gap:11px}
+.opt{width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);color:var(--cream);border-radius:16px;padding:16px 16px 14px;display:flex;gap:14px;align-items:flex-start;transition:.15s}
+@media(hover:hover) and (pointer:fine){.opt:hover{border-color:var(--amber);background:var(--card2)}}
+.opt .emoji{font-size:24px;line-height:1.2;flex:0 0 32px;text-align:center}
+.opt b{display:block;font-size:16px;line-height:1.4}
+.opt span{display:block;font-size:13px;color:var(--muted);line-height:1.55;margin-top:2px}
+.opt.selected{border-color:var(--amber);background:#3d2a12}
+/* ANALYZING */
+.analyzing{text-align:center;padding:70px 0}
+.glass{font-size:64px;animation:sway 1.2s ease-in-out infinite alternate;display:inline-block}
+@keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+@media(prefers-reduced-motion:reduce){.glass{animation:none}}
+/* RESULT */
+.type-box{text-align:center;padding:28px 0 6px}
+.type-box .label{font-size:12px;letter-spacing:.14em;color:var(--amber2);font-weight:900}
+.type-box h2{font-family:"Shippori Mincho",serif;font-size:30px;line-height:1.3;margin:8px 0}
+.type-box p{color:var(--muted);font-size:14px;max-width:540px;margin:0 auto}
+.match-ring{display:flex;align-items:center;justify-content:center;gap:16px;margin:18px 0}
+.ring{width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--amber) calc(var(--p)*1%),#ffffff18 0);display:grid;place-items:center}
+.ring-in{width:76px;height:76px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;text-align:center}
+.ring-in b{font-size:22px;line-height:1}.ring-in span{font-size:10px;color:var(--muted)}
+.radar-wrap{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:16px 0}
+.radar-wrap h3,.section h3{font-family:"Shippori Mincho",serif;margin:0 0 8px;font-size:19px}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--muted);justify-content:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.axis-list{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:12px}
+.axis-row{font-size:12.5px}
+.axis-row .bar{height:6px;background:#ffffff14;border-radius:99px;overflow:hidden;margin-top:3px}
+.axis-row .bar i{display:block;height:100%;background:var(--amber)}
+.main-bottle{background:linear-gradient(160deg,#38250f,#241708);border:1px solid #6b4a1e;border-radius:24px;padding:22px;margin:20px 0;position:relative;overflow:hidden}
+.main-bottle:before{content:"おすすめの1本";position:absolute;top:14px;right:-32px;transform:rotate(35deg);background:var(--amber);color:#201304;font-size:11px;font-weight:900;padding:5px 38px}
+.main-bottle .region{font-size:12px;letter-spacing:.08em;color:var(--amber2);font-weight:900}
+.main-bottle h3{font-family:"Shippori Mincho",serif;font-size:28px;line-height:1.3;margin:6px 40px 4px 0}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.fact{background:#00000035;border:1px solid #ffffff1f;padding:6px 10px;border-radius:999px;font-size:12.5px}
+.diff{font-size:13px;padding:10px 12px;border-radius:12px;background:#00000030;line-height:1.6}
+.notes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+@media(max-width:560px){.notes{grid-template-columns:1fr}.axis-list{grid-template-columns:1fr}}
+.notebox{background:#ffffff0d;border-radius:14px;padding:12px}
+.notebox b{font-size:12px;color:var(--amber2);letter-spacing:.06em}.notebox p{font-size:13.5px;margin:4px 0 0;line-height:1.65}
+.section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0}
+.section p,.section li{font-size:14.5px;color:#efe3cb}
+.section ul{margin:8px 0;padding-left:20px}.section li{margin:6px 0}
+.mini-grid{display:flex;flex-direction:column;gap:10px}
+.mini{display:flex;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;align-items:flex-start}
+.mini .rank{flex:0 0 38px;height:38px;border-radius:50%;background:#ffffff12;display:grid;place-items:center;font-weight:900;color:var(--amber2)}
+.mini b{font-size:15.5px}.mini p{font-size:13px;color:var(--muted);margin:3px 0 0;line-height:1.6}
+.mini .price{font-size:12px;color:var(--amber2);font-weight:700}
+.adventure{border-color:#7a5a1f;background:linear-gradient(140deg,#2e2210,#241708)}
+.avoid{background:#2a1512;border-color:#5c2d22}
+.restart{width:100%;background:var(--amber);color:#1d1206;border:none;border-radius:999px;padding:15px;font-weight:900;font-size:16px;margin-top:16px}
+.ghost{width:100%;background:none;border:1px solid var(--line);color:var(--cream);border-radius:999px;padding:13px;font-weight:700;margin-top:10px}
+.hidden{display:none!important}
+.footer{font-size:11.5px;color:var(--muted2);text-align:center;margin-top:22px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- START -->
+  <section id="screen-start">
+    <div class="hero">
+      <span class="hero-badge">🥃 18の質問 ・ 約3分</span>
+      <h1>今夜の気分に合う<br><span>ウイスキー1本</span>を<br>見つけよう。</h1>
+      <p>専門用語は使いません。「煙っぽいのが好き」「蜂蜜みたいな甘さがいい」——そんな日常の言葉で答えるだけで、あなたの味の好みを読み取って、48本の中からぴったりの1本をおすすめします。</p>
+      <div class="hero-visual">
+        <div class="bottle-ill"><div class="bottle-label">WHISKY<br>診断</div></div>
+        <div>
+          <b style="font-size:16px">たとえば、こんなふうに聞きます</b>
+          <p style="color:var(--muted);font-size:13.5px;margin:6px 0 0">「焚き火みたいな煙の香りは好き？」「干しぶどうやチョコみたいな濃い甘さはどう？」——直感でタップするだけ。途中で好みが分かれば、質問もそれに合わせて深掘りします。</p>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>18問</b><span>分岐つき診断</span></div>
+        <div class="stat"><b>48本</b><span>世界中から厳選</span></div>
+        <div class="stat"><b>10項目</b><span>味の好みを分析</span></div>
+      </div>
+      <button class="start-btn" id="btn-start">診断をはじめる →</button>
+      <p class="note">未成年の方・お酒が飲めない方は、香りの好み診断としてお楽しみください。</p>
+      <div class="how">
+        <div><b>① 答える</b><p>好きな香りや甘さ、予算などをタップで選ぶだけ。</p></div>
+        <div><b>② 好みが見える</b><p>あなたの「味の好みマップ」をグラフで表示します。</p></div>
+        <div><b>③ 1本に出会う</b><p>本命1本＋次点と「冒険枠」も紹介。飲み方・合う食べ物つき。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="screen-quiz" class="hidden">
+    <div class="topbar"><div class="logo">ウイスキー<span>マッチング</span></div><button class="textbtn" id="btn-quit">最初に戻る</button></div>
+    <div class="qmeta"><span id="q-count">質問 1</span><span id="q-pct">0%</span></div>
+    <div class="progress"><i id="q-bar" style="width:5%"></i></div>
+    <div class="qcard">
+      <h2 id="q-title"></h2>
+      <p class="qsub" id="q-sub"></p>
+      <div class="opts" id="q-opts"></div>
+    </div>
+    <div style="margin-top:14px"><button class="textbtn" id="btn-back">← 前の質問に戻る</button></div>
+  </section>
+
+  <!-- ANALYZING -->
+  <section id="screen-analyzing" class="hidden">
+    <div class="analyzing"><span class="glass">🥃</span><h2 style="font-family:'Shippori Mincho',serif">棚から1本、選んでいます…</h2><p style="color:var(--muted);font-size:14px" id="analyzing-text">あなたの好みと48本を比べています</p></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="screen-result" class="hidden">
+    <div class="topbar"><div class="logo">ウイスキー<span>マッチング</span></div><span style="font-size:12px;color:var(--muted)">診断結果</span></div>
+    <div class="type-box">
+      <div class="label">あなたの味のタイプ</div>
+      <h2 id="r-type"></h2>
+      <p id="r-type-desc"></p>
+    </div>
+    <div class="match-ring">
+      <div class="ring" id="r-ring"><div class="ring-in"><div><b id="r-match">–</b><span style="display:block">マッチ度</span></div></div></div>
+      <div style="max-width:300px"><b id="r-match-text" style="font-size:15px"></b><p style="font-size:13px;color:var(--muted);margin:4px 0 0">10項目の好みの近さから計算しました。数字が高いほど「まさに好みド真ん中」です。</p></div>
+    </div>
+
+    <div class="radar-wrap">
+      <h3>あなたの「味の好みマップ」</h3>
+      <div id="radar" style="display:grid;place-items:center"></div>
+      <div class="legend"><span><i style="background:#e8a93d"></i>あなたの好み</span><span><i style="background:#8fb573"></i>おすすめの1本</span></div>
+      <div class="axis-list" id="axis-list"></div>
+    </div>
+
+    <div class="main-bottle" id="r-main"></div>
+
+    <div class="section"><h3>💡 あなたに合う理由</h3><ul id="r-reasons"></ul></div>
+    <div class="section"><h3>🍽️ おすすめの飲み方・合う食べ物</h3><div id="r-serve"></div></div>
+
+    <div><h3 style="font-family:'Shippori Mincho',serif;margin:20px 0 10px">次点の候補</h3><div class="mini-grid" id="r-runners"></div></div>
+    <div><h3 style="font-family:'Shippori Mincho',serif;margin:20px 0 10px">冒険枠 ― ちょっとだけ好みの外側</h3><div id="r-adventure"></div></div>
+    <div id="r-budget"></div>
+    <div class="section avoid"><h3>🚫 今回は避けた方がいい方向</h3><p id="r-avoid" style="margin:6px 0 0"></p></div>
+
+    <button class="restart" id="btn-restart">もう一度診断する</button>
+    <p class="footer">価格は2026年11月時点の店頭・通販の目安です。実際の価格や在庫はお店によって変わります。<br>お酒は20歳になってから。飲み過ぎにご注意ください。</p>
+  </section>
+</div>
+
+<script>
+/* ===== 軸（やさしい名前） ===== */
+var AXES=[
+ {k:'peat',label:'煙っぽさ'},{k:'sweet',label:'甘さ'},{k:'fruit',label:'果物っぽさ'},{k:'rich',label:'コク・濃さ'},
+ {k:'spice',label:'スパイス感'},{k:'body',label:'しっかり感'},{k:'finish',label:'余韻の長さ'},{k:'salt',label:'海っぽさ・塩気'},
+ {k:'floral',label:'華やかさ'},{k:'heat',label:'ガツンと感'}
+];
+var AXIS_W={peat:1.7,sweet:1.25,fruit:1.1,rich:1.0,spice:.9,body:1.0,finish:.8,salt:1.05,floral:1.0,heat:1.15};
+
+/* ===== ボトルDB 48本 =====
+ profile順: [煙,甘,果物,コク,スパイス,しっかり,余韻,海,華やか,ガツン] 0-10 */
+var B=[
+{n:'ラフロイグ 10年',area:'スコットランド・アイラ島',abv:'40%',cask:'バーボン樽（アメリカのオーク樽）',price:6500,diff:'買いやすい',p:[10,4,3,6,5,7,8,8,2,7],aroma:'焚き火の煙、海の潮の香り、少し薬みたいな香り',taste:'最初は煙がドンと来て、後からほのかな甘さと麦の味',finish:'煙と塩気が長く残る',serve:'ストレートか、氷を1つ入れて。煙の香りをそのまま楽しむのがおすすめ',food:'スモークサーモン、燻製チーズ、牡蠣',tags:['smoke']},
+{n:'アードベッグ 10年',area:'スコットランド・アイラ島',abv:'46%',cask:'バーボン樽',price:7200,diff:'買いやすい',p:[10,5,4,6,6,8,9,7,3,8],aroma:'焚き火とタールのような煙、レモンの皮',taste:'煙の迫力と、レモンみたいな爽やかさが一緒に来る',finish:'煙が長く、最後に甘さがふっと戻る',serve:'ストレート、または水を数滴。ハイボールにすると煙がふわっと広がる',food:'焼き鳥（塩）、燻製ナッツ',tags:['smoke']},
+{n:'ラガヴーリン 16年',area:'スコットランド・アイラ島',abv:'43%',cask:'バーボン樽とシェリー樽',price:13500,diff:'少し探す',p:[9,6,5,9,6,9,10,8,3,7],aroma:'落ち着いた焚き火の煙、干しぶどう、海藻',taste:'煙の中に濃い甘さ。ゆっくり広がる重みがある',finish:'とても長く、煙と甘さが交互に残る',serve:'ストレートでゆっくり。特別な夜に',food:'ダークチョコレート、ラムレーズンアイス',tags:['smoke','rich']},
+{n:'ボウモア 12年',area:'スコットランド・アイラ島',abv:'40%',cask:'バーボン樽とシェリー樽',price:5500,diff:'買いやすい',p:[6,6,6,6,4,6,7,6,5,5],aroma:'やさしい煙、蜂蜜、レモン',taste:'煙と甘さのバランスがよく、飲みやすい',finish:'ほのかな煙が心地よく残る',serve:'ロックやハイボールでも崩れない',food:'白身魚のカルパッチョ、レモンを絞った唐揚げ',tags:['smoke','balanced']},
+{n:'カリラ 12年',area:'スコットランド・アイラ島',abv:'43%',cask:'バーボン樽',price:7000,diff:'買いやすい',p:[7,5,6,5,5,6,7,7,4,6],aroma:'焚き火の煙と青りんご、潮風',taste:'爽やかで軽やか、煙はしっかりあるのに重くない',finish:'爽やかな煙がすっと続く',serve:'ハイボールが抜群。食事中にも合う',food:'牡蠣、魚介のフリット',tags:['smoke']},
+{n:'ポートシャーロット 10年',area:'スコットランド・アイラ島',abv:'50%',cask:'バーボン樽とワイン樽',price:9200,diff:'少し探す',p:[8,6,5,7,6,8,9,6,4,9],aroma:'焚き火の煙、バニラ、焼いた砂糖',taste:'力強い煙と甘さ。度数の高さで味が濃い',finish:'煙と甘さが長く残る',serve:'ストレートに水を少しずつ足して変化を楽しんで',food:'ベーコン、焼きとうもろこし',tags:['smoke','strong']},
+{n:'グレンフィディック 12年',area:'スコットランド・スペイサイド',abv:'40%',cask:'バーボン樽とシェリー樽',price:4500,diff:'とても買いやすい',p:[0,6,8,4,3,4,5,1,8,3],aroma:'洋梨、青りんご、蜂蜜',taste:'みずみずしい果物みたいで、クセがなくすっきり',finish:'軽やかで爽やか',serve:'ストレート入門にも、ハイボールにも',food:'フルーツタルト、白身魚のソテー',tags:['fruity','easy']},
+{n:'ザ・マッカラン 12年 シェリーオーク',area:'スコットランド・スペイサイド',abv:'40%',cask:'シェリー樽（甘口ワインの樽）',price:14500,diff:'少し探す',p:[0,8,7,9,5,7,8,0,6,4],aroma:'干しぶどう、オレンジの皮、シナモン',taste:'ドライフルーツやチョコみたいな濃い甘さ',finish:'温かい甘さが長く残る',serve:'ストレートかロックで、デザートみたいに',food:'チョコレート、ドライいちじく、ナッツ',tags:['rich','sweet']},
+{n:'グレンドロナック 12年',area:'スコットランド・ハイランド',abv:'43%',cask:'シェリー樽',price:7800,diff:'買いやすい',p:[0,8,7,9,6,7,8,0,5,5],aroma:'レーズン、焼きりんご、シナモン',taste:'濃厚で甘く、ケーキみたいな満足感',finish:'甘さとスパイスが長く続く',serve:'ストレート、冬はお湯割り気分で少し加水を',food:'シュトーレン、焼き菓子、チーズケーキ',tags:['rich','sweet']},
+{n:'アベラワー 12年',area:'スコットランド・スペイサイド',abv:'40%',cask:'シェリー樽とバーボン樽',price:6200,diff:'買いやすい',p:[0,7,7,7,4,6,6,0,6,4],aroma:'りんご、蜂蜜、ほのかなチョコ',taste:'まろやかで甘く、とげがない',finish:'やさしい甘さが残る',serve:'ロックがおすすめ。甘さがほどよく開く',food:'アップルパイ、ミルクチョコ',tags:['sweet','easy']},
+{n:'ザ・バルヴェニー ダブルウッド 12年',area:'スコットランド・スペイサイド',abv:'40%',cask:'バーボン樽のあとシェリー樽',price:8200,diff:'買いやすい',p:[0,7,6,7,5,6,7,0,7,4],aroma:'蜂蜜、バニラ、シナモン',taste:'なめらかで、蜂蜜とナッツの甘さが広がる',finish:'温かく、やさしく長い',serve:'ストレートでなめらかさを楽しんで',food:'カステラ、ナッツの蜂蜜漬け',tags:['sweet','rich']},
+{n:'ザ・グレンリベット 12年',area:'スコットランド・スペイサイド',abv:'40%',cask:'バーボン樽',price:4600,diff:'とても買いやすい',p:[0,6,8,4,3,4,5,1,9,3],aroma:'パイナップル、花の香り、青りんご',taste:'華やかで軽く、果物ジュースみたいな爽やかさ',finish:'すっきり爽やか',serve:'ハイボールや水割りで華やかさが立つ',food:'サラダ、柑橘のデザート',tags:['fruity','floral','easy']},
+{n:'グレンファークラス 12年',area:'スコットランド・ハイランド',abv:'43%',cask:'シェリー樽',price:6000,diff:'買いやすい',p:[1,7,6,8,5,7,7,0,5,5],aroma:'干し果物、バター、ほのかな煙',taste:'しっかり濃く、甘さに芯がある',finish:'濃い甘さがじんわり残る',serve:'ストレートかロックで',food:'フルーツケーキ、焼き鳥（たれ）',tags:['rich']},
+{n:'グレンモーレンジィ オリジナル',area:'スコットランド・ハイランド',abv:'40%',cask:'バーボン樽',price:5200,diff:'とても買いやすい',p:[0,7,8,5,3,5,6,1,9,3],aroma:'みかん、桃、バニラ、花の香り',taste:'華やかでフルーティー。バニラの甘さがふんわり',finish:'爽やかでやさしい',serve:'ストレートでもハイボールでも華やか',food:'桃のコンポート、レアチーズケーキ',tags:['fruity','floral']},
+{n:'オーバン 14年',area:'スコットランド・ハイランド',abv:'43%',cask:'バーボン樽',price:9800,diff:'少し探す',p:[3,6,6,7,5,7,8,7,5,5],aroma:'海の潮の香り、オレンジ、ほのかな煙',taste:'甘さ・塩気・煙が少しずつ顔を出す欲張りな味',finish:'塩気と甘さが長く残る',serve:'ストレートかロックで、海の幸と一緒に',food:'海鮮料理、塩辛、燻製',tags:['salt','balanced']},
+{n:'ダルモア 12年',area:'スコットランド・ハイランド',abv:'40%',cask:'バーボン樽とシェリー樽',price:8400,diff:'買いやすい',p:[0,8,6,8,5,6,7,0,5,4],aroma:'オレンジ、チョコ、コーヒー',taste:'まろやかで甘く、デザートみたい',finish:'チョコの甘さが残る',serve:'ロックで食後に',food:'オレンジ風味のチョコ、プリン',tags:['sweet','rich']},
+{n:'グレンゴイン 12年',area:'スコットランド・ハイランド',abv:'43%',cask:'シェリー樽とバーボン樽',price:6600,diff:'買いやすい',p:[0,7,7,6,4,5,6,0,7,4],aroma:'青りんご、蜂蜜、焼きたてのパン',taste:'煙を一切使わない、澄んだ甘さと果物感',finish:'やさしく爽やか',serve:'ストレートで澄んだ味を',food:'りんごのタルト、ソフトチーズ',tags:['fruity','easy']},
+{n:'オーヘントッシャン 12年',area:'スコットランド・ローランド',abv:'40%',cask:'バーボン樽とシェリー樽',price:4700,diff:'買いやすい',p:[0,6,6,4,3,3,4,0,7,2],aroma:'柑橘、生姜、クリーム',taste:'とても軽くてなめらか。アルコールのトゲが少ない',finish:'軽く爽やか',serve:'ハイボールや水割りで軽やかに',food:'軽い前菜、レモン風味の料理',tags:['easy','light']},
+{n:'グレンキンチー 12年',area:'スコットランド・ローランド',abv:'43%',cask:'バーボン樽',price:6000,diff:'買いやすい',p:[1,5,6,4,4,4,5,2,8,3],aroma:'草原みたいな香り、蜂蜜、柑橘',taste:'軽やかでドライ、華やかさがある',finish:'すっきり爽やか',serve:'食前酒みたいにストレートで',food:'ハーブサラダ、白身魚',tags:['floral','light']},
+{n:'スプリングバンク 10年',area:'スコットランド・キャンベルタウン',abv:'46%',cask:'バーボン樽とシェリー樽',price:11500,diff:'手に入りにくい',p:[4,6,5,8,6,8,9,7,4,7],aroma:'ほのかな煙、潮の香り、バニラ、湿った土みたいな深さ',taste:'甘さ・塩気・煙・コクが全部ある、味の立体感がすごい',finish:'とても長く複雑',serve:'ストレートに少しずつ水を足して',food:'燻製、ハードチーズ',tags:['salt','rich','rare']},
+{n:'グレンスコシア ダブルカスク',area:'スコットランド・キャンベルタウン',abv:'46%',cask:'バーボン樽とシェリー樽',price:6800,diff:'買いやすい',p:[2,7,6,7,5,7,7,6,4,6],aroma:'キャラメル、海の香り、干し果物',taste:'甘さと塩気のバランスが面白い',finish:'キャラメルが長く残る',serve:'ロックがおすすめ',food:'キャラメルポップコーン、焼き鳥',tags:['salt','sweet']},
+{n:'タリスカー 10年',area:'スコットランド・スカイ島',abv:'45.8%',cask:'バーボン樽',price:6200,diff:'買いやすい',p:[6,5,4,6,8,7,8,9,3,7],aroma:'潮風、黒胡椒、ほのかな煙',taste:'ピリッとした胡椒感と海の塩気。食事に合う',finish:'胡椒と煙が長く残る',serve:'ハイボール（胡椒を少し振ると名物スタイル）',food:'牡蠣、唐揚げ、スパイシーな料理（辛さ控えめで）',tags:['salt','spice']},
+{n:'ハイランドパーク 12年',area:'スコットランド・オークニー島',abv:'40%',cask:'シェリー樽',price:5600,diff:'買いやすい',p:[3,7,6,7,5,6,7,4,7,4],aroma:'蜂蜜、花、ほのかな煙',taste:'甘さの中に煙がちらり。バランス型のお手本',finish:'蜂蜜と煙がやさしく残る',serve:'ストレートでもロックでも',food:'蜂蜜がけチーズ、ローストポーク',tags:['balanced','sweet']},
+{n:'ジュラ 10年',area:'スコットランド・ジュラ島',abv:'40%',cask:'バーボン樽とシェリー樽',price:4600,diff:'買いやすい',p:[1,7,6,6,4,5,5,3,6,3],aroma:'キャラメル、桃、ほのかな煙',taste:'甘くてまろやか、クセが少ない',finish:'やさしい甘さ',serve:'ハイボールでもストレートでも',food:'キャラメルデザート、鶏の照り焼き',tags:['easy','sweet']},
+{n:'アラン 10年',area:'スコットランド・アラン島',abv:'46%',cask:'バーボン樽とシェリー樽',price:6700,diff:'買いやすい',p:[0,7,8,6,4,6,7,2,8,5],aroma:'柑橘、バニラ、蜂蜜',taste:'果物感がしっかりあって、満足感もある',finish:'柑橘と甘さが長く残る',serve:'ストレートで果物感を満喫',food:'柑橘のサラダ、カマンベール',tags:['fruity']},
+{n:'レッドブレスト 12年',area:'アイルランド',abv:'40%',cask:'バーボン樽とシェリー樽',price:7800,diff:'買いやすい',p:[0,8,7,8,6,6,7,0,6,4],aroma:'干し果物、ナッツ、シナモン',taste:'クリームみたいになめらかで濃い甘さ',finish:'スパイスと甘さが長く残る',serve:'ストレートでなめらかさを',food:'ナッツ、フルーツケーキ',tags:['rich','sweet']},
+{n:'バスカー シングルモルト',area:'アイルランド',abv:'44.3%',cask:'バーボン樽とシェリー樽とワイン樽',price:3800,diff:'買いやすい',p:[0,7,7,6,4,5,6,1,7,4],aroma:'梨、バニラ、蜂蜜',taste:'軽やかで甘く、ハイボールで果物感が弾ける',finish:'爽やかな甘さ',serve:'ハイボールが鉄板。炭酸で香りが開く',food:'唐揚げ、ポテトサラダ',tags:['fruity','highball']},
+{n:'ジェムソン',area:'アイルランド',abv:'40%',cask:'バーボン樽とシェリー樽',price:2400,diff:'とても買いやすい',p:[0,6,5,4,3,3,4,0,6,2],aroma:'花、青りんご、バニラ',taste:'とにかくなめらかで軽い。トゲがほぼない',finish:'すっきり短め',serve:'ハイボールやジンジャエール割りで',food:'軽いおつまみ全般',tags:['easy','light','highball']},
+{n:'山崎 12年',area:'日本・大阪（山崎）',abv:'43%',cask:'いろいろな樽（お線香みたいな落ち着いた香りの樽を含む）',price:17600,diff:'手に入りにくい（定価では抽選・入荷待ちが多い）',p:[1,7,7,8,6,7,9,1,7,5],aroma:'桃やパイナップル、お線香みたいな落ち着いた香り',taste:'果物の甘さに、落ち着いた深みが重なる',finish:'長く上品に続く',serve:'ストレートか、きれいな氷でロック',food:'和食全般、白身の刺身',tags:['fruity','rich','rare']},
+{n:'白州 12年',area:'日本・山梨（白州）',abv:'43%',cask:'バーボン樽ほか',price:17600,diff:'手に入りにくい（定価では抽選・入荷待ちが多い）',p:[2,5,7,5,4,5,7,2,8,4],aroma:'森の香り、青りんご、ミント、ほのかな煙',taste:'爽やかで澄んでいる。森の中みたいな清々しさ',finish:'爽やかさが長く残る',serve:'ハイボールにミントを添えると名物スタイル',food:'山菜、焼き魚、和食',tags:['floral','rare']},
+{n:'宮城峡 シングルモルト',area:'日本・宮城（仙台）',abv:'45%',cask:'シェリー樽とバーボン樽',price:7600,diff:'買いやすい',p:[0,7,8,6,4,6,7,1,9,5],aroma:'りんご、洋梨、花の香り、バニラ',taste:'華やかでフルーティー。翔太さん好みのバーボン樽の華やかさが出やすいタイプ',finish:'果物の甘さがやさしく残る',serve:'ストレートで華やかさを、ハイボールで爽やかに',food:'りんごのコンポート、チーズ',tags:['fruity','floral']},
+{n:'余市 シングルモルト',area:'日本・北海道（余市）',abv:'45%',cask:'バーボン樽ほか',price:7600,diff:'買いやすい',p:[5,6,5,7,5,7,8,6,4,6],aroma:'ほのかな煙、海の香り、麦の甘さ',taste:'力強くて男前。甘さと煙と塩気がある',finish:'しっかり長く残る',serve:'ロックかストレートで',food:'ジンギスカン、燻製',tags:['smoke','salt']},
+{n:'響 ジャパニーズハーモニー',area:'日本（ブレンド）',abv:'43%',cask:'いろいろな樽（お線香みたいな落ち着いた香りの樽を含む）',price:11500,diff:'少し探す',p:[0,7,7,7,5,6,8,0,8,4],aroma:'バラや花、蜂蜜、オレンジ',taste:'まろやかで華やか。いろんな味がきれいにまとまっている',finish:'上品に長く続く',serve:'ストレートかロックで、贈り物にも',food:'和食、チョコレート',tags:['floral','rich']},
+{n:'ニッカ フロム・ザ・バレル',area:'日本（ブレンド）',abv:'51.4%',cask:'バーボン樽ほか',price:3600,diff:'買いやすい',p:[1,7,6,8,6,7,8,1,6,9],aroma:'バニラ、キャラメル、オレンジ',taste:'度数が高い分、味がギュッと濃い。甘さとスパイスが強い',finish:'濃い甘さが長く残る',serve:'ロックで少しずつ溶かしながら。ハイボールも濃厚',food:'唐揚げ、濃い味の肉料理',tags:['strong','rich','highball']},
+{n:'竹鶴 ピュアモルト',area:'日本（ブレンド）',abv:'43%',cask:'シェリー樽とバーボン樽',price:7200,diff:'少し探す',p:[2,7,6,7,5,6,7,2,6,5],aroma:'干し果物、ほのかな煙、バニラ',taste:'まろやかでバランスがいい。甘さとコクの両方',finish:'やさしく長く残る',serve:'ストレートかロックで',food:'煮物、焼き魚',tags:['balanced','rich']},
+{n:'知多',area:'日本・愛知（知多）',abv:'43%',cask:'ワイン樽とシェリー樽ほか',price:4600,diff:'買いやすい',p:[0,6,6,4,3,3,4,0,8,3],aroma:'ミント、白い花、蜂蜜',taste:'軽くて爽やか。ハイボールのためにあるような味',finish:'すっきり爽やか',serve:'ハイボール一択級。食事と一緒に',food:'和食、揚げ物、天ぷら',tags:['light','highball','floral']},
+{n:'サントリー 角瓶',area:'日本（ブレンド）',abv:'40%',cask:'バーボン樽ほか',price:1800,diff:'とても買いやすい',p:[1,6,5,5,4,4,4,1,5,3],aroma:'バニラ、麦の甘さ',taste:'甘さとコクのバランスがいい、居酒屋の定番',finish:'ほどよく残る',serve:'ハイボール（角ハイ）。レモンを絞っても',food:'居酒屋メニュー全般、唐揚げ、餃子',tags:['highball','easy']},
+{n:'メーカーズマーク',area:'アメリカ・ケンタッキー（バーボン）',abv:'45%',cask:'新しいオーク樽を焼いたもの',price:3600,diff:'とても買いやすい',p:[0,9,6,7,4,6,6,0,6,6],aroma:'バニラ、キャラメル、蜂蜜',taste:'甘くてまろやか。小麦のやさしい甘さ',finish:'甘さが温かく残る',serve:'ロックかハイボール。甘党に人気',food:'パンケーキ、バーベキュー、焼き鳥（たれ）',tags:['sweet','bourbon']},
+{n:'ウッドフォード リザーブ',area:'アメリカ・ケンタッキー（バーボン）',abv:'43.2%',cask:'新しいオーク樽を焼いたもの',price:4700,diff:'買いやすい',p:[0,8,6,8,6,7,8,0,6,6],aroma:'バニラ、シナモン、オレンジ、木の香り',taste:'甘さ・スパイス・果物が層になっている',finish:'長く温かい',serve:'ストレートかロックで層を楽しんで',food:'ステーキ、チョコレート',tags:['bourbon','rich','spice']},
+{n:'バッファロー トレース',area:'アメリカ・ケンタッキー（バーボン）',abv:'45%',cask:'新しいオーク樽を焼いたもの',price:3600,diff:'買いやすい',p:[0,8,6,7,5,6,6,0,6,6],aroma:'バニラ、ミント、焼き砂糖',taste:'甘さと爽やかさのバランスがいい',finish:'ほどよく長く甘い',serve:'ハイボールでもロックでも万能',food:'ハンバーガー、フライドチキン',tags:['bourbon','sweet']},
+{n:'フォアローゼズ スモールバッチ',area:'アメリカ・ケンタッキー（バーボン）',abv:'45%',cask:'新しいオーク樽を焼いたもの',price:4200,diff:'買いやすい',p:[0,7,7,6,6,6,7,0,7,6],aroma:'花、果物、シナモン',taste:'華やかでスパイシー、甘さは控えめ寄り',finish:'スパイスが心地よく残る',serve:'ロックで華やかさを',food:'スパイス料理（辛さ控えめ）、チーズ',tags:['bourbon','spice','floral']},
+{n:'ワイルドターキー 101',area:'アメリカ・ケンタッキー（バーボン）',abv:'50.5%',cask:'新しいオーク樽を焼いたもの',price:3200,diff:'買いやすい',p:[0,8,5,7,7,7,7,0,4,9],aroma:'バニラ、キャラメル、胡椒',taste:'度数高めでガツンと濃い。甘さも強い',finish:'力強く残る',serve:'ロックか濃いめハイボールで',food:'バーベキュー、濃い味の肉',tags:['bourbon','strong']},
+{n:'サーゼラック ライ',area:'アメリカ（ライウイスキー）',abv:'45%',cask:'新しいオーク樽を焼いたもの',price:5200,diff:'少し探す',p:[0,5,6,6,9,6,7,0,6,6],aroma:'シナモン、胡椒、オレンジ',taste:'ピリッとスパイシーでドライ。甘ったるくない',finish:'スパイスがすっと残る',serve:'ロックか、カクテルベースにも',food:'サラミ、ハードチーズ',tags:['spice','dry']},
+{n:'ジョニーウォーカー ブラックラベル 12年',area:'スコットランド（ブレンド）',abv:'40%',cask:'バーボン樽ほか',price:3200,diff:'とても買いやすい',p:[3,6,6,6,5,6,6,3,5,4],aroma:'ほのかな煙、干し果物、バニラ',taste:'甘さ・煙・コクがバランスよくまとまっている万能型',finish:'ほどよく長く残る',serve:'ハイボールでもロックでも。迷ったらこれ',food:'何にでも合う。ナッツ、焼き鳥',tags:['balanced','highball']},
+{n:'デュワーズ 12年',area:'スコットランド（ブレンド）',abv:'40%',cask:'バーボン樽とシェリー樽',price:2600,diff:'とても買いやすい',p:[0,7,6,5,3,4,5,0,7,3],aroma:'蜂蜜、柑橘、花',taste:'なめらかで甘く、ハイボールで華やかさが立つ',finish:'やさしい甘さ',serve:'ハイボールがおすすめ',food:'軽い揚げ物、サラダ',tags:['highball','easy','floral']},
+{n:'モンキーショルダー',area:'スコットランド（ブレンド）',abv:'40%',cask:'バーボン樽',price:4100,diff:'買いやすい',p:[0,7,7,5,4,5,5,0,7,4],aroma:'オレンジ、バニラ、蜂蜜',taste:'果物っぽくて甘い、カクテルにも向く',finish:'爽やかな甘さ',serve:'ハイボールやオレンジジュース割り気分のアレンジにも',food:'オレンジ風味のデザート、唐揚げ',tags:['fruity','highball']},
+{n:'カバラン コンサートマスター',area:'台湾',abv:'40%',cask:'ワイン樽（ポートワイン）ほか',price:8200,diff:'少し探す',p:[0,8,9,7,4,6,7,0,8,4],aroma:'マンゴー、パイナップル、南国の果物',taste:'トロピカルで甘い。暑い国で早く熟成した濃さ',finish:'果物の甘さが残る',serve:'ストレートかロックで南国感を',food:'マンゴーデザート、エスニック料理',tags:['fruity','sweet']},
+{n:'アムルット フュージョン',area:'インド',abv:'50%',cask:'バーボン樽',price:8400,diff:'少し探す',p:[4,7,6,8,7,8,9,2,5,9],aroma:'ほのかな煙、チョコ、スパイス',taste:'濃くてスパイシー、度数の力強さもある冒険向き',finish:'長く濃厚',serve:'ストレートに少しずつ加水して',food:'カレー風味（辛さ控えめ）、チョコ',tags:['strong','spice']}
+];
+
+/* ===== 質問 ===== */
+var Q=[
+{id:'exp',title:'ウイスキー、どれくらい飲みますか？',sub:'正直にどうぞ。今のあなたに合う強さやクセを調整します。',opts:[
+ {e:'🌱',t:'ほぼ初めて・まだよく分からない',d:'飲みやすさを大事に選びます',p:{heat:2,peat:2,body:3},w:1.2,tag:'beginner'},
+ {e:'🥃',t:'たまに飲む',d:'居酒屋や家でときどき',p:{heat:4,body:5},w:1,tag:'sometimes'},
+ {e:'🏠',t:'家でよく飲む',d:'お気に入りが何本かある',p:{heat:6,body:6},w:1,tag:'regular'},
+ {e:'🔍',t:'いろいろ飲み比べるのが好き',d:'新しい味を探すのが楽しい',p:{heat:7,body:7},w:1,tag:'explorer'}]},
+{id:'style',title:'どんな飲み方が好きですか？',sub:'よく飲む飲み方、または飲んでみたい飲み方を。',opts:[
+ {e:'🧊',t:'そのまま（ストレート）や氷だけ（ロック）',d:'味をそのまま、ゆっくり味わいたい',p:{body:7,rich:7,finish:7,heat:6},tag:'straight'},
+ {e:'🫧',t:'炭酸で割るハイボール',d:'爽やかに、食事と一緒にゴクゴク',p:{body:4,fruit:7,floral:7,heat:3},tag:'highball'},
+ {e:'💧',t:'水割り',d:'まろやかにして、長く楽しみたい',p:{body:3,heat:2,sweet:6},tag:'mizuwari'},
+ {e:'🤷',t:'まだ決まっていない',d:'おすすめの飲み方も教えてほしい',p:{body:5,heat:4},tag:'any'}]},
+{id:'peat',title:'煙っぽい香りは好きですか？',sub:'焚き火や燻製みたいな香りのことです。島のウイスキーによくあります。',opts:[
+ {e:'🔥',t:'大好き。煙が強いほどいい',d:'焚き火の前みたいな香りにワクワクする',p:{peat:10,salt:7},w:1.8,tag:'peat_love'},
+ {e:'👍',t:'少しなら好き',d:'ほのかに煙があるくらいが心地いい',p:{peat:5,salt:5},w:1.5,tag:'peat_some'},
+ {e:'😐',t:'苦手。煙っぽくない方がいい',d:'果物や甘い香りの方が好き',p:{peat:1,salt:2},w:1.8,tag:'peat_no'},
+ {e:'❓',t:'飲んだことがなくて分からない',d:'気になるけど、強すぎるのは不安',p:{peat:3,salt:3},w:1.2,tag:'peat_unknown'}]},
+{id:'smokeType',showIf:function(a){return a.peat&&(a.peat.tag==='peat_love'||a.peat.tag==='peat_some')},title:'どんな煙のイメージが好きですか？',sub:'煙好きのあなたへ深掘りです。近いものを選んでください。',opts:[
+ {e:'🪵',t:'焚き火や燻製みたいな煙',d:'キャンプファイヤーやスモーク料理の香り',p:{peat:9,rich:6,salt:5},w:1.3,tag:'smoke_fire'},
+ {e:'🌊',t:'海や薬みたいな、ツンとした煙',d:'潮の香りと薬品みたいな個性が混ざった感じ',p:{peat:10,salt:9,heat:6},w:1.3,tag:'smoke_sea'},
+ {e:'🍂',t:'灰や土みたいな、落ち着いた煙',d:'派手じゃなく、じんわり深い感じ',p:{peat:7,rich:8,finish:8},w:1.3,tag:'smoke_earth'},
+ {e:'⚖️',t:'煙は脇役でいい。甘さや果物と半々がいい',d:'バランス重視',p:{peat:5,sweet:7,fruit:6},w:1.3,tag:'smoke_balance'}]},
+{id:'sweetKind',title:'どんな甘さが好きですか？',sub:'甘さにも種類があります。食べ物でイメージしてください。',opts:[
+ {e:'🍯',t:'蜂蜜やバニラの甘さ',d:'アイスクリームやカスタードみたいな、やさしい甘さ',p:{sweet:8,floral:7,rich:5},w:1.3,tag:'sweet_honey'},
+ {e:'🍎',t:'果物そのものの甘さ',d:'りんごや桃みたいな、みずみずしい甘さ',p:{sweet:6,fruit:9,floral:7},w:1.3,tag:'sweet_fruit'},
+ {e:'🍇',t:'干しぶどうやチョコみたいな濃い甘さ',d:'ドライフルーツやケーキみたいな、濃厚な甘さ',p:{sweet:8,rich:9,fruit:7},w:1.3,tag:'sweet_rich'},
+ {e:'🚫',t:'甘くない方がいい',d:'すっきり・ドライな味が好き',p:{sweet:2,spice:6},w:1.3,tag:'sweet_dry'}]},
+{id:'sweetLevel',title:'甘さの量はどれくらい？',sub:'全体の好みとして教えてください。',opts:[
+ {e:'🍬',t:'しっかり甘い方が好き',d:'デザートみたいに満足したい',p:{sweet:9},w:1.2},
+ {e:'⚖️',t:'ほどほどがいい',d:'甘さはあるけど、しつこくないのがいい',p:{sweet:6},w:1.2},
+ {e:'🍋',t:'甘さ控えめ・すっきり派',d:'爽やかさやキレが大事',p:{sweet:3,fruit:6},w:1.2}]},
+{id:'fruit',title:'果物で言うと、どの方向が好きですか？',sub:'香りのイメージで選んでください。',opts:[
+ {e:'🍏',t:'柑橘や青りんごみたいな爽やかさ',d:'レモン、みかん、青りんごのシャキッと感',p:{fruit:8,floral:7,sweet:5},w:1.2,tag:'fruit_fresh'},
+ {e:'🥭',t:'マンゴーや桃みたいな南国・甘い果物',d:'トロピカルでジューシーな感じ',p:{fruit:10,sweet:7,floral:6},w:1.2,tag:'fruit_tropical'},
+ {e:'🫐',t:'ベリーや干し果物みたいな濃い果物',d:'レーズン、いちじく、ベリーの濃さ',p:{fruit:7,rich:8,sweet:7},w:1.2,tag:'fruit_dark'},
+ {e:'🌾',t:'果物より、麦や木の香りが好き',d:'パンやビスケット、木みたいな落ち着いた香り',p:{fruit:3,rich:7,floral:3},w:1.2,tag:'fruit_grain'}]},
+{id:'cask',title:'どんな「深み」が気になりますか？',sub:'長く寝かせた樽（木のたる）から移る香りの違いです。',opts:[
+ {e:'🌼',t:'バニラや花みたいな、華やかな深み',d:'軽やかで明るい香りが好き',p:{floral:9,sweet:7,fruit:7,rich:4},w:1.3,tag:'cask_bourbon'},
+ {e:'🍫',t:'チョコや干し果物みたいな、濃い深み',d:'甘口ワインの樽で寝たような、濃厚さ',p:{rich:10,sweet:8,spice:5},w:1.3,tag:'cask_sherry'},
+ {e:'🕯️',t:'お線香みたいな、落ち着いた深み',d:'お寺や和室みたいな、静かで上品な香り',p:{rich:8,spice:7,finish:8,floral:6},w:1.3,tag:'cask_mizunara'},
+ {e:'🤷',t:'深みはおまかせ。全体のバランスで選んで',d:'',p:{rich:6},w:.8,tag:'cask_any'}]},
+{id:'spice',title:'スパイスっぽさはどうですか？',sub:'シナモンや黒胡椒みたいな、ピリッ・ふわっとした感じです。',opts:[
+ {e:'🌶️',t:'ピリッと刺激があるのが好き',d:'黒胡椒みたいなキレがほしい（辛い料理とは別です）',p:{spice:9,heat:6},w:1.1,tag:'spice_hot'},
+ {e:'🥧',t:'シナモンみたいな甘いスパイスが好き',d:'アップルパイみたいな温かい香り',p:{spice:7,sweet:7,rich:6},w:1.1,tag:'spice_sweet'},
+ {e:'😐',t:'スパイスは控えめがいい',d:'まろやかで丸い味が好き',p:{spice:2,sweet:6},w:1.1,tag:'spice_low'}]},
+{id:'salt',title:'海っぽさや塩気は気になりますか？',sub:'潮風や海苔みたいな、ほのかな塩気のことです。',opts:[
+ {e:'🌊',t:'好き。海の香りがあると嬉しい',d:'海辺で飲んでるような気分になれる',p:{salt:9,peat:6},w:1.2,tag:'salt_love'},
+ {e:'👌',t:'少しある分にはいい',d:'アクセント程度なら',p:{salt:5},w:1,tag:'salt_some'},
+ {e:'🚫',t:'塩気は要らない',d:'果物や甘さの世界がいい',p:{salt:1},w:1.2,tag:'salt_no'}]},
+{id:'body',title:'味の「しっかり感」はどれくらい？',sub:'水みたいに軽いか、シロップみたいに濃いか、のイメージです。',opts:[
+ {e:'🪶',t:'軽くてスイスイ飲める方がいい',d:'重いと疲れてしまう',p:{body:3,heat:3,finish:4},w:1.2,tag:'body_light'},
+ {e:'⚖️',t:'中くらい。軽すぎず重すぎず',d:'満足感と飲みやすさの両方',p:{body:6,finish:6},w:1.2,tag:'body_mid'},
+ {e:'🏋️',t:'どっしり濃い方が好き',d:'一口の満足感が大きいのがいい',p:{body:9,rich:8,finish:8},w:1.2,tag:'body_heavy'}]},
+{id:'finish',title:'飲んだ後の「余韻」は？',sub:'飲み込んだ後も、香りが口に残る長さのことです。',opts:[
+ {e:'💨',t:'すっきり消えるのが好き',d:'次の一口や食事に響かない',p:{finish:3,body:4},w:1},
+ {e:'🌙',t:'長く残るのが好き',d:'余韻に浸る時間が楽しい',p:{finish:9,rich:7},w:1.1},
+ {e:'🤷',t:'こだわりなし',d:'',p:{finish:5},w:.6}]},
+{id:'heat',title:'アルコールの「ツン」とした感じは？',sub:'鼻にツンと来たり、喉が熱くなったりする感じです。',opts:[
+ {e:'😣',t:'苦手。まろやかなのがいい',d:'ツンと来ると飲みにくい',p:{heat:2,body:4},w:1.4,tag:'heat_low'},
+ {e:'👌',t:'少しなら大丈夫',d:'お酒らしさとして楽しめる',p:{heat:5},w:1.1,tag:'heat_mid'},
+ {e:'🔥',t:'ガツンと来る方が好き',d:'喉が熱くなる感じが「飲んだ！」って気分',p:{heat:9,body:8},w:1.4,tag:'heat_high'}]},
+{id:'abv',title:'水で薄めていない、度数の高いタイプは？',sub:'通常より度数が高い分、味が濃く出るタイプのことです。',opts:[
+ {e:'😍',t:'興味ある。濃い味を試したい',d:'少しずつ水を足して変化を楽しむのも好き',p:{heat:8,rich:8,body:8},w:1.1,tag:'abv_high'},
+ {e:'😐',t:'普通の度数でいい',d:'40〜45%くらいが飲みやすい',p:{heat:5},w:.9,tag:'abv_normal'},
+ {e:'🙅',t:'度数は低めが安心',d:'強いお酒はゆっくりしか飲めない',p:{heat:2},w:1.1,tag:'abv_low'}]},
+{id:'scene',title:'どんな場面で飲みたいですか？',sub:'今の気分に一番近いものを。',opts:[
+ {e:'🌙',t:'食後に一人でゆっくり',d:'一日の終わりに、ちびちびと',p:{rich:7,finish:8,body:7},tag:'scene_solo'},
+ {e:'🍽️',t:'食事と一緒に',d:'料理の邪魔をしない、爽やかな相棒がいい',p:{body:4,fruit:6,salt:5,finish:4},tag:'scene_meal'},
+ {e:'🎉',t:'特別な日やご褒美に',d:'少し高くても、思い出に残る1本を',p:{rich:8,finish:9,floral:7},tag:'scene_special'},
+ {e:'👥',t:'友達とワイワイ',d:'みんなで割って飲む、楽しい1本',p:{sweet:6,floral:6,heat:4},tag:'scene_friends'}]},
+{id:'dislike',title:'これは避けたい、というものは？',sub:'最後の調整です。当てはまるものを1つ。',opts:[
+ {e:'💨',t:'煙っぽすぎるの',d:'煙が主役のものは外して',p:{peat:1},w:1.6,tag:'avoid_smoke'},
+ {e:'🍭',t:'甘すぎるの',d:'甘ったるいのは疲れる',p:{sweet:3},w:1.3,tag:'avoid_sweet'},
+ {e:'😖',t:'アルコールのツンとした感じ',d:'刺激が強いものは外して',p:{heat:2},w:1.5,tag:'avoid_heat'},
+ {e:'✨',t:'特にない。おすすめに任せる',d:'',p:{},w:.5,tag:'avoid_none'}]},
+{id:'budget',title:'予算はどれくらいですか？',sub:'1本あたりの目安です。価格はお店で変わります。',opts:[
+ {e:'💰',t:'3,000円くらいまで',d:'まずは手頃なところから',p:{},tag:'budget_3000',budget:3000},
+ {e:'💰💰',t:'6,000円くらいまで',d:'定番の良いものが狙える帯',p:{},tag:'budget_6000',budget:6000},
+ {e:'💰💰💰',t:'15,000円くらいまで',d:'長く寝かせたものや有名どころも',p:{},tag:'budget_15000',budget:15000},
+ {e:'🎁',t:'こだわらない。一番合うものを',d:'価格より相性優先で',p:{},tag:'budget_any',budget:999999}]}
+];
+
+/* ===== 状態 ===== */
+var answers={}; var histStack=[]; var currentQ=null;
+function visibleQs(){return Q.filter(function(q){return !q.showIf||q.showIf(answers)})}
+function $(id){return document.getElementById(id)}
+function show(id){['screen-start','screen-quiz','screen-analyzing','screen-result'].forEach(function(s){$(s).classList.toggle('hidden',s!==id)})}
+
+function startQuiz(){answers={};histStack=[];show('screen-quiz');nextQ(Q[0])}
+function nextQ(q){
+ currentQ=q;
+ if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+ var vis=visibleQs(); var idx=vis.indexOf(q); if(idx<0)idx=histStack.length;
+ var total=Math.max(vis.length,17);
+ $('q-count').textContent='質問 '+(histStack.length+1)+' / 約'+total;
+ var pct=Math.round((histStack.length)/total*100);
+ $('q-pct').textContent=pct+'%'; $('q-bar').style.width=Math.max(5,pct)+'%';
+ $('q-title').textContent=q.title; $('q-sub').textContent=q.sub||'';
+ $('btn-back').style.visibility=histStack.length?'visible':'hidden';
+ var box=$('q-opts'); box.innerHTML='';
+ q.opts.forEach(function(o){
+   var b=document.createElement('button'); b.className='opt';
+   b.innerHTML='<span class="emoji">'+o.e+'</span><span><b></b><span></span></span>';
+   b.querySelector('b').textContent=o.t; b.querySelectorAll('span')[2].textContent=o.d||'';
+   b.addEventListener('click',function(){
+     if(b.dataset.done)return; b.dataset.done='1';
+     var sib=box.querySelectorAll('.opt'); for(var s=0;s<sib.length;s++)sib[s].classList.remove('selected');
+     b.classList.add('selected'); b.blur();
+     setTimeout(function(){answer(q,o)},230);
+   }); box.appendChild(b);
+ });
+ window.scrollTo(0,0);
+}
+function answer(q,o){
+ answers[q.id]={tag:o.tag||'',p:o.p||{},w:o.w||1,budget:o.budget||null,label:o.t};
+ histStack.push(q.id);
+ var vis=visibleQs();
+ var next=null;
+ // 次の未回答の質問を探す
+ for(var i=0;i<Q.length;i++){ if(!answers[Q[i].id] && (!Q[i].showIf||Q[i].showIf(answers))){ next=Q[i]; break; } }
+ if(next) nextQ(next); else finish();
+}
+function back(){
+ if(!histStack.length)return;
+ var lastId=histStack.pop(); delete answers[lastId];
+ // lastId 以降の分岐依存を消す（煙の深掘り等）
+ if(lastId==='peat'){delete answers.smokeType; var h=histStack.indexOf('smokeType'); if(h>=0)histStack.splice(h,1);}
+ nextQ(Q.find(function(q){return q.id===lastId}));
+}
+function finish(){
+ show('screen-analyzing');
+ var msgs=['あなたの好みと48本を比べています','煙・甘さ・果物のバランスを見ています','予算と飲み方も合わせて調整しています'];
+ var i=0; var iv=setInterval(function(){i=(i+1)%msgs.length;$('analyzing-text').textContent=msgs[i]},700);
+ setTimeout(function(){clearInterval(iv);renderResult()},2100);
+}
+
+/* ===== マッチング ===== */
+function userProfile(){
+ var sum={},wt={}; AXES.forEach(function(a){sum[a.k]=0;wt[a.k]=0});
+ Object.keys(answers).forEach(function(id){
+   var a=answers[id]; if(!a.p)return; var w=a.w||1;
+   Object.keys(a.p).forEach(function(k){sum[k]+=a.p[k]*w; wt[k]+=w});
+ });
+ var prof={}; AXES.forEach(function(a){prof[a.k]=wt[a.k]?Math.round(sum[a.k]/wt[a.k]*10)/10:5});
+ return prof;
+}
+function scoreBottle(prof,b){
+ var s=0,tw=0;
+ AXES.forEach(function(a,i){var w=AXIS_W[a.k]; var d=prof[a.k]-b.p[i]; s+=w*d*d; tw+=w});
+ var dist=Math.sqrt(s/tw);
+ var pen=0;
+ var budget=(answers.budget&&answers.budget.budget)||999999;
+ if(budget<999999 && b.price>budget*1.25) pen+=(b.price-budget)/900;
+ if(answers.exp&&answers.exp.tag==='beginner'){ if(b.p[0]>=8)pen+=1.2; if(b.p[9]>=8)pen+=0.9; }
+ if(answers.dislike&&answers.dislike.tag==='avoid_smoke'&&b.p[0]>=6)pen+=2.2;
+ if(answers.dislike&&answers.dislike.tag==='avoid_heat'&&b.p[9]>=8)pen+=1.6;
+ return {dist:dist+pen, raw:dist};
+}
+function typeName(prof){
+ var sorted=AXES.map(function(a){return {k:a.k,label:a.label,v:prof[a.k]}}).sort(function(x,y){return y.v-x.v});
+ var top=sorted[0], second=sorted[1];
+ var map={peat:'煙',sweet:'甘さ',fruit:'果物',rich:'コク',spice:'スパイス',body:'しっかり感',finish:'余韻',salt:'海の香り',floral:'華やかさ',heat:'力強さ'};
+ if(top.v>=8&&second.v>=7) return map[top.k]+'と'+map[second.k]+'の欲張り型';
+ if(top.k==='peat')return '煙を楽しむ冒険型';
+ if(top.k==='fruit'||top.k==='floral')return '果物と花の華やか型';
+ if(top.k==='sweet'&&second.k==='rich')return '濃い甘さに浸るデザート型';
+ if(top.k==='rich')return 'コク深くゆっくり味わう型';
+ if(top.k==='salt')return '海の香りが好きな通型';
+ if(Math.max.apply(null,sorted.map(function(s){return s.v}))-Math.min.apply(null,sorted.map(function(s){return s.v}))<=3)return 'バランス上手な万能型';
+ return map[top.k]+'が光る、'+map[second.k]+'とのバランス型';
+}
+function typeDesc(prof){
+ var sorted=AXES.map(function(a){return {label:a.label,v:prof[a.k]}}).sort(function(x,y){return y.v-x.v});
+ return '特に「'+sorted[0].label+'（'+sorted[0].v.toFixed(0)+'）」と「'+sorted[1].label+'（'+sorted[1].v.toFixed(0)+'）」を大事にする好みでした。逆に「'+sorted[sorted.length-1].label+'」は控えめで大丈夫なタイプです。';
+}
+function radarSVG(prof,bottle){
+ var cx=150,cy=140,R=105, n=AXES.length;
+ function pt(i,v){var ang=-Math.PI/2+i*2*Math.PI/n; var r=R*v/10; return [cx+r*Math.cos(ang),cy+r*Math.sin(ang)]}
+ var grid='',labels='';
+ [2.5,5,7.5,10].forEach(function(v){var pts=AXES.map(function(_,i){return pt(i,v).join(',')}).join(' '); grid+='<polygon points="'+pts+'" fill="none" stroke="#ffffff22" stroke-width="1"/>'});
+ AXES.forEach(function(a,i){var p=pt(i,10); var lp=pt(i,11.8); grid+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="#ffffff18"/>';
+  labels+='<text x="'+lp[0]+'" y="'+lp[1]+'" fill="#c9b294" font-size="10.5" text-anchor="middle" dominant-baseline="middle">'+a.label+'</text>'});
+ var up=AXES.map(function(a,i){return pt(i,prof[a.k]).join(',')}).join(' ');
+ var bp=AXES.map(function(a,i){return pt(i,bottle.p[i]).join(',')}).join(' ');
+ return '<svg viewBox="0 0 300 280" width="300" height="280" role="img" aria-label="味の好みマップ">'+grid+'<polygon points="'+bp+'" fill="#8fb57344" stroke="#8fb573" stroke-width="2"/><polygon points="'+up+'" fill="#e8a93d33" stroke="#e8a93d" stroke-width="2.5"/>'+labels+'</svg>';
+}
+
+function renderResult(){
+ var prof=userProfile();
+ var ranked=B.map(function(b){var s=scoreBottle(prof,b); return {b:b,dist:s.dist,match:Math.max(58,Math.min(98,Math.round(100-s.dist*11)))} }).sort(function(x,y){return x.dist-y.dist});
+ var best=ranked[0], runners=ranked.slice(1,4);
+ // 冒険枠: 4〜12位の中で、本命と煙 or 濃さが一番違うもの
+ var advPool=ranked.slice(4,13); var adv=advPool[0]; var maxDiff=-1;
+ advPool.forEach(function(r){var d=Math.abs(r.b.p[0]-best.b.p[0])+Math.abs(r.b.p[3]-best.b.p[3]); if(d>maxDiff){maxDiff=d;adv=r}});
+ var budget=(answers.budget&&answers.budget.budget)||999999;
+ var budgetAlt=null;
+ if(budget<999999){ var inB=ranked.filter(function(r){return r.b.price<=budget && r.b.n!==best.b.n}); if(inB.length) budgetAlt=inB[0]; }
+
+ $('r-type').textContent=typeName(prof);
+ $('r-type-desc').textContent=typeDesc(prof);
+ $('r-match').textContent=best.match+'%'; $('r-ring').style.setProperty('--p',best.match);
+ $('r-match-text').textContent='本命は「'+best.b.n+'」';
+ $('radar').innerHTML=radarSVG(prof,best.b);
+ var al=$('axis-list'); al.innerHTML='';
+ AXES.forEach(function(a){var v=prof[a.k]; var row=document.createElement('div'); row.className='axis-row';
+  row.innerHTML='<span>'+a.label+'：<b>'+v.toFixed(0)+'</b> / 10</span><div class="bar"><i style="width:'+(v*10)+'%"></i></div>'; al.appendChild(row)});
+
+ var b=best.b;
+ $('r-main').innerHTML=
+  '<div class="region">'+b.area+' ・ '+b.diff+'</div><h3>'+b.n+'</h3>'+
+  '<div class="facts"><span class="fact">度数 '+b.abv+'</span><span class="fact">価格の目安 約'+b.price.toLocaleString()+'円</span><span class="fact">寝かせた樽：'+b.cask+'</span></div>'+
+  (b.diff.indexOf('手に入りにくい')>=0?'<div class="diff">⚠️ 正直にお伝えすると、この銘柄は人気が高く、定価では抽選販売や入荷待ちが多いです。見つけたらラッキー、くらいに思ってください。下の「予算内の代替」や次点も現実的な候補です。</div>':'')+
+  '<div class="notes"><div class="notebox"><b>香り</b><p>'+b.aroma+'</p></div><div class="notebox"><b>味わい</b><p>'+b.taste+'</p></div><div class="notebox"><b>飲んだ後</b><p>'+b.finish+'</p></div></div>';
+
+ // 理由: 差が小さい軸を最大3つ
+ var reasons=[];
+ AXES.forEach(function(a,i){var d=Math.abs(prof[a.k]-b.p[i]); if(d<=2.2&&prof[a.k]>=6) reasons.push({a:a,d:d,bv:b.p[i]})});
+ reasons.sort(function(x,y){return x.d-y.d}); reasons=reasons.slice(0,3);
+ if(reasons.length<2){AXES.forEach(function(a,i){if(prof[a.k]>=5&&reasons.length<3&&!reasons.some(function(r){return r.a.k===a.k}))reasons.push({a:a,d:Math.abs(prof[a.k]-b.p[i]),bv:b.p[i]})})}
+ var ansText={};
+ Object.keys(answers).forEach(function(id){ansText[id]=answers[id].label});
+ var ul=$('r-reasons'); ul.innerHTML='';
+ reasons.forEach(function(r){var li=document.createElement('li');
+  li.textContent='「'+r.a.label+'」の好み（あなた '+prof[r.a.k].toFixed(0)+' / この1本 '+r.bv+'）が近く、無理なくハマるポイントです。';
+  ul.appendChild(li)});
+ if(ansText.style){var li=document.createElement('li'); li.textContent='飲み方の好み「'+ansText.style+'」にも合わせやすい1本です（おすすめの飲み方は下記）。'; ul.appendChild(li)}
+ if(ansText.scene){var li2=document.createElement('li'); li2.textContent='場面の希望「'+ansText.scene+'」の雰囲気に合います。'; ul.appendChild(li2)}
+
+ $('r-serve').innerHTML='<p style="margin:6px 0"><b>飲み方：</b>'+b.serve+'</p><p style="margin:6px 0"><b>合う食べ物：</b>'+b.food+'</p>';
+
+ var rg=$('r-runners'); rg.innerHTML='';
+ runners.forEach(function(r,i){var d=document.createElement('div'); d.className='mini';
+  d.innerHTML='<div class="rank">'+(i+2)+'</div><div><b></b> <span class="price"></span><p></p></div>';
+  d.querySelector('b').textContent=r.b.n+'（マッチ度 '+r.match+'%）';
+  d.querySelector('.price').textContent='約'+r.b.price.toLocaleString()+'円 ・ '+r.b.area;
+  d.querySelector('p').textContent=r.b.taste+'／香り：'+r.b.aroma; rg.appendChild(d)});
+
+ var ad=$('r-adventure'); ad.innerHTML='';
+ var amd=document.createElement('div'); amd.className='mini adventure';
+ amd.innerHTML='<div class="rank">冒</div><div><b></b> <span class="price"></span><p></p></div>';
+ amd.querySelector('b').textContent=adv.b.n+'（マッチ度 '+adv.match+'%）';
+ amd.querySelector('.price').textContent='約'+adv.b.price.toLocaleString()+'円 ・ '+adv.b.area;
+ amd.querySelector('p').textContent='本命とは少し違う方向ですが、あなたの好みの延長線上にある「新しい発見」枠です。'+adv.b.taste;
+ ad.appendChild(amd);
+
+ var bb=$('r-budget'); bb.innerHTML='';
+ if(budgetAlt && best.b.price>budget){
+   bb.innerHTML='<h3 style="font-family:\'Shippori Mincho\',serif;margin:20px 0 10px">予算内で買える代替</h3>';
+   var d2=document.createElement('div'); d2.className='mini';
+   d2.innerHTML='<div class="rank">¥</div><div><b></b> <span class="price"></span><p></p></div>';
+   d2.querySelector('b').textContent=budgetAlt.b.n+'（マッチ度 '+budgetAlt.match+'%）';
+   d2.querySelector('.price').textContent='約'+budgetAlt.b.price.toLocaleString()+'円 ・ 予算内';
+   d2.querySelector('p').textContent='本命が予算オーバーだったため、予算の中で一番好みに近い1本です。'+budgetAlt.b.taste;
+   bb.appendChild(d2);
+ } else if(budget<999999){
+   bb.innerHTML='<div class="section" style="margin-top:14px"><h3>💰 予算チェック</h3><p style="margin:6px 0 0">本命は予算（約'+budget.toLocaleString()+'円）の中に収まっています。</p></div>';
+ }
+
+ var avoidTxt='今回の回答から、好みと逆方向のものは候補から外しました。';
+ if(answers.dislike&&answers.dislike.tag==='avoid_smoke')avoidTxt='「煙っぽすぎるものは避けたい」という希望に沿って、煙が主役の島系の強い銘柄は上位から外しました。煙が苦手な方は、果物や蜂蜜の甘さが前に出るタイプから入るのがおすすめです。';
+ else if(answers.dislike&&answers.dislike.tag==='avoid_sweet')avoidTxt='甘さが強いデザート系の銘柄は順位を下げました。甘ったるさが苦手な方は、爽やかな果物感やスパイスのキレがあるタイプの方が長く楽しめます。';
+ else if(answers.dislike&&answers.dislike.tag==='avoid_heat')avoidTxt='アルコールのツンとした刺激が強い、度数高めの銘柄は順位を下げました。まろやかさ重視なら、氷で少しずつ薄めながら飲むのも手です。';
+ else if(prof.peat<=3)avoidTxt='あなたの好みだと、煙が強い銘柄（焚き火や薬みたいな香りがドンと来るタイプ）は「クセが強すぎる」と感じやすいはず。まずは果物や甘さが主役のものからどうぞ。';
+ else if(prof.sweet<=3)avoidTxt='甘さ控えめ派のあなたには、蜂蜜やチョコみたいな濃い甘さが主役の銘柄は重く感じやすいです。ドライでキレのある方向が合います。';
+ $('r-avoid').textContent=avoidTxt;
+
+ show('screen-result'); window.scrollTo(0,0);
+}
+
+$('btn-start').addEventListener('click',startQuiz);
+$('btn-quit').addEventListener('click',function(){show('screen-start')});
+$('btn-back').addEventListener('click',back);
+$('btn-restart').addEventListener('click',startQuiz);
+</script>
+</body>
+</html>
